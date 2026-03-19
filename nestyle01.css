@@ -1,27 +1,21 @@
-html 
- {cursor: cell;}
-
-h1
-{
-	color: darkblue;
-    cursor: cell;
+html {
+  cursor: cell;
 }
-
-body
-{
-	background-color: white;
-    cursor: cell;
+h1 {
+  color: darkblue;
+  cursor: cell;
 }
-
-.clicky
-{ 
-   cursor: crosshair;
+body {
+  background-color: white;
+  cursor: cell;
 }
-
+.clicky { 
+  cursor: crosshair;
+}
 .frame {
   border: 5px solid blue;
   background-image: url("https://cdn.pixabay.com/photo/2018/08/31/07/24/background-3640783_960_720.jpg");
-  background-repeat: no-repeat; /* prevents the background image from repeating */
+  background-repeat: no-repeat;
   background-position: center;
   padding: 50px;
   box-sizing: border-box;
@@ -30,111 +24,68 @@ body
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  margin-top: -80px;
+  margin-top: 0;
   cursor: cell;
+  max-height: 90vh;
+  overflow-y: auto;
 }
-
 .goldframe {
   border: 5px solid #ffd700;
   background-image: url("https://cdn.pixabay.com/photo/2018/08/31/07/24/background-3640783_960_720.jpg");
-  background-repeat: no-repeat; /* prevents the background image from repeating */
+  background-repeat: no-repeat;
   background-position: center;
-  box-shadow: 0px 0px 20px 10px rgba(255, 215, 0, 0.75); /* adds a goldish box shadow around the frame */
+  box-shadow: 0px 0px 20px 10px rgba(255, 215, 0, 0.75);
   padding: 30px;
   box-sizing: initial;
   position: fixed;
   top: 50%;
   left: 50%;
-
   transform: translate(-50%, -50%);
 }
-
-
 h1 {
   margin-top: 0;
 }
-
-.frame h4
-{text-align: center;}
-
+.frame h4 {
+  text-align: center;
+}
 .frame h1 {
   margin-top: -50px;
 }
-
 img {
   max-width: 100%;
   height: auto;
 }
-
-
-#MONROVIA
-
-{
-
- width: 500px;
-
-margin:0 auto;
-
-background-color: white;
-
-text-align: center;
-
-align-content: center;
-
+#MONROVIA {
+  width: 500px;
+  margin: 0 auto;
+  background-color: white;
+  text-align: center;
+  align-content: center;
 }
-
-img 
-{
+img {
   display: block;
   max-width: 100%;
   height: auto;
   margin: 0 auto;
 }
-
-#STRUISBAAI
-
-{
-
- width: 200px;
-
-margin:0 auto;
-
-background-color: lightblue;
-
-text-align: center;
-
-align-content: center;
-
+#STRUISBAAI {
+  width: 200px;
+  margin: 0 auto;
+  background-color: lightblue;
+  text-align: center;
+  align-content: center;
 }
-
-#MARNE
-
-{
-
- width: 200px;
-
-margin:-60 auto;
-
-background-color: palevioletred;
-
-text-align: center;
-
-align-content: center;
-
+#MARNE {
+  width: 200px;
+  margin: -60px auto;
+  background-color: palevioletred;
+  text-align: center;
+  align-content: center;
 }
-
-#NASVILLE
-
-{
-
- width: 200px;
-
-margin:-60 auto;
-
-background-color: yellow;
-
-text-align: center;
-
-align-content: center;
-
+#NASVILLE {
+  width: 200px;
+  margin: -60px auto;
+  background-color: yellow;
+  text-align: center;
+  align-content: center;
 }
