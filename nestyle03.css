@@ -1,0 +1,21 @@
+body {
+  background-image: url("https://s10.gifyu.com/images/3dgifmaker99846.gif");
+  background-repeat: repeat;
+}
+
+img {
+  width: 600;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+* {cursor: url(https://cur.cursors-4u.net/smilies/smi-2/smi189.cur), auto !important;}
+
+.clickable 
+
+{
+  cursor: url(https://cur.cursors-4u.net/smilies/smi-2/smi185.cur), auto !important;
+
+}
