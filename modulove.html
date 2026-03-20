@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>MODULOVE</title>
-  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur.ico" type="image/x-icon">
+  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -110,17 +110,12 @@
     }
     .separator { border: none; border-top: 1px solid #eee; margin: 6px 0; }
     #imgLabel {
-      font-size: 11px;
-      color: #aaa;
-      letter-spacing: 0.08em;
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.06em;
       text-align: center;
-      margin-top: 4px;
-    }
-    .section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #bbb;
+      margin-top: 8px;
+      font-style: italic;
     }
   </style>
 </head>
@@ -129,10 +124,9 @@
     <canvas id="c" width="720" height="480"></canvas>
     <button id="imgBtn"></button>
   </div>
-  <div id="imgLabel">Image 1 / 5</div>
+  <div id="imgLabel">Suisse allemand</div>
 
   <div class="controls">
-
     <div class="slider-row">
       <label>Répétition :</label>
       <input type="range" id="rep" min="1" max="40" step="0.5" value="8">
@@ -152,14 +146,12 @@
       <label>Axe :</label>
       <button id="dirBtn">X</button>
     </div>
-
     <hr class="separator">
     <div class="slider-row">
       <label>Chaos :</label>
       <input type="range" id="randomSlider" min="0" max="1" step="0.01" value="0" style="accent-color:#111">
       <span id="randomVal">0.00</span>
     </div>
-
     <hr class="separator">
     <div class="slider-row">
       <label>Largeur :</label>
@@ -171,16 +163,14 @@
       <input type="range" id="scaleY" min="0.3" max="3" step="0.01" value="1">
       <span id="scaleYVal">1.00</span>
     </div>
-
   </div>
 
 <script>
 const images = [
-  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/3%20PERSONNAGE/suiise%20allemand.jpg',
-  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Stephane-Ravier.png',
-  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/steiniger_johannes_gross.jpg',
-  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Christoph_Blocher_(Bundesrat,_2004).jpg',
-  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Gilles-Lellouche.png',
+  { url: 'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Stephane-Ravier.png', name: 'Stéphane Ravier' },
+  { url: 'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/steiniger_johannes_gross.jpg', name: 'Johannes Steiniger' },
+  { url: 'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Christoph_Blocher_(Bundesrat,_2004).jpg', name: 'Christoph Blocher' },
+  { url: 'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Gilles-Lellouche.png', name: 'Gilles Lellouche' },
 ];
 
 let imgIndex = 0;
@@ -293,24 +283,24 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-function loadImage(url) {
+function loadImage(index) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
-  img.src = url;
-  img.onerror = () => { console.log('image non trouvée : ' + url); };
+  img.src = images[index].url;
+  img.onerror = () => { console.log('image non trouvée : ' + images[index].url); };
   img.onload = () => {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
   };
+  document.getElementById('imgLabel').textContent = images[index].name;
 }
 
 document.getElementById('imgBtn').onclick = () => {
   imgIndex = (imgIndex + 1) % images.length;
-  loadImage(images[imgIndex]);
-  document.getElementById('imgLabel').textContent = 'Image ' + (imgIndex + 1) + ' / ' + images.length;
+  loadImage(imgIndex);
 };
 
-loadImage(images[0]);
+loadImage(0);
 
 let noiseT = 0;
 function loop() {
