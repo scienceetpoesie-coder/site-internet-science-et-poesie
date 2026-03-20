@@ -163,9 +163,9 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
 const img = new Image();
 img.crossOrigin = 'anonymous';
-img.src = 'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/mur%20brique.png';
+img.src = 'https://github.com/scienceetpoesie-coder/notre-entente/blob/main/steiniger_johannes_gross.jpg?raw=true';
 img.onerror = () => {
-  img.src = 'https://raw.githubusercontent.com/scienceetpoesie-coder/site-internet-science-et-poesie/main/mur%20brique.png';
+  img.src = 'https://github.com/scienceetpoesie-coder/notre-entente/blob/main/steiniger_johannes_gross.jpg?raw=true';
 };
 img.onload = () => {
   gl.bindTexture(gl.TEXTURE_2D, tex);
