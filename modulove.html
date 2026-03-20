@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>MODULOVE</title>
-  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur" type="image/x-icon">
+  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur.ico" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -198,9 +198,9 @@ const vsrc = `
     uv.y = 1.0 - uv.y;
     float r = u_imgRatio / u_canvasRatio;
     if(r > 1.0){
-      uv.y = uv.y / r + (1.0 - 1.0/r) * 0.5;
+      uv.y = (uv.y - 0.5) / r + 0.5;
     } else {
-      uv.x = uv.x * r + (1.0 - r) * 0.5;
+      uv.x = (uv.x - 0.5) * r + 0.5;
     }
     v_uv = uv;
     gl_Position = vec4(a_pos, 0, 1);
