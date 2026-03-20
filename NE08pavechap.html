@@ -1,85 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-   <link rel="icon" href="https://github.com/scienceetpoesie-coder/site-internet-science-et-poesie/raw/refs/heads/main/assets/favicon.ico" type="image/x-icon">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapitres</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    background: #ffffff;
-  }
-
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 3rem;
-  }
-
-  nav {
-    font-family: 'Book Antiqua', 'Palatino Linotype', Palatino, Georgia, serif;
-    width: 100%;
-    max-width: 760px;
-  }
-
-  .toc-title {
-    font-size: clamp(9px, 1.1vh, 13px);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #aaaaaa;
-    margin-bottom: clamp(0.6rem, 1.8vh, 1.6rem);
-    font-weight: normal;
-    text-align: center;
-  }
-
-  .chapter-line {
-    display: block;
-    padding: clamp(0.18rem, 0.7vh, 0.55rem) 0;
-    font-size: clamp(15px, 2.6vh, 26px);
-    font-weight: bold;
-    line-height: 1.4;
-  }
-
-  .chapter-line a {
-    display: inline-grid;
-    grid-template-columns: clamp(2.6rem, 4vw, 4rem) 1fr;
-    align-items: baseline;
-    text-decoration: none;
-    color: #0033bb;
-    font-weight: bold;
-    transition: color 0.18s ease;
-    width: 100%;
-  }
-
-  .chapter-line a .num {
-    font-size: clamp(12px, 2vh, 20px);
-    color: #0033bb;
-    font-weight: bold;
-    transition: color 0.18s ease;
-  }
-
-  .chapter-line a .label {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.18s ease;
-  }
-
-  .chapter-line a:hover,
-  .chapter-line a:hover .num,
-  .chapter-line a:hover .label {
-    color: #dd1100;
-  }
-</style>
+  <link rel="icon" href="https://github.com/scienceetpoesie-coder/site-internet-science-et-poesie/raw/refs/heads/main/assets/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapitres</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 3rem;
+    }
+    nav {
+      font-family: 'Book Antiqua', 'Palatino Linotype', Palatino, Georgia, serif;
+      width: 100%;
+    }
+    .toc-title {
+      font-size: 1vw;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #aaaaaa;
+      margin-bottom: 2.5vh;
+      font-weight: normal;
+      text-align: left;
+      /* aligné sur le point */
+      padding-left: 4vw;
+    }
+    .chapter-line {
+      display: flex;
+      align-items: baseline;
+      font-size: 2.1vw;
+      font-weight: bold;
+      line-height: 1;
+      white-space: nowrap;
+      padding: 0.85vh 0;
+    }
+    .chapter-line a {
+      display: contents;
+      text-decoration: none;
+      color: #0033bb;
+      font-weight: bold;
+      transition: color 0.18s ease;
+    }
+    .num {
+      /* les chiffres s'alignent à droite jusqu'au point */
+      display: inline-block;
+      text-align: right;
+      width: 4vw;
+      color: #0033bb;
+      font-weight: bold;
+      transition: color 0.18s ease;
+      flex-shrink: 0;
+    }
+    .label {
+      display: inline-block;
+      padding-left: 0.5em;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      color: #0033bb;
+      font-weight: bold;
+      transition: color 0.18s ease;
+      white-space: nowrap;
+    }
+    .chapter-line:hover .num,
+    .chapter-line:hover .label {
+      color: #dd1100;
+    }
+  </style>
 </head>
 <body>
 <nav>
   <p class="toc-title">Chapitres</p>
-
   <div class="chapter-line"><a href="#"><span class="num">I.</span><span class="label">L'E.p.h.a.d. érotique</span></a></div>
   <div class="chapter-line"><a href="#"><span class="num">II.</span><span class="label">Journée de lobotomie et de joie à Struisbaai</span></a></div>
   <div class="chapter-line"><a href="#"><span class="num">III.</span><span class="label">Inconsidérations relativistes singulières décorrélées de notre refuge à Struisbaai</span></a></div>
