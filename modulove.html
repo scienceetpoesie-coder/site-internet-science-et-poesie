@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>MODULOVE</title>
-  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur" type="image/x-icon">
+  <link rel="icon" href="https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/coeur.ico" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -32,11 +32,6 @@
       box-shadow: 0 4px 0 #4a0000, 0 6px 8px rgba(0,0,0,0.35);
       cursor: pointer;
       flex-shrink: 0;
-      font-size: 24px;
-      color: #ff9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: transform 0.1s, box-shadow 0.1s;
     }
     #imgBtn:hover { background: #cc0000; }
@@ -70,7 +65,7 @@
       width: 120px;
       flex-shrink: 0;
     }
-    .slider-row input[type=range] { flex: 1; }
+    .slider-row input[type=range] { flex: 1; accent-color: #888; }
     .slider-row span {
       font-size: 13px;
       color: #333;
@@ -103,7 +98,7 @@
     }
     #dirBtn:hover { background: black; color: white; }
     .separator { border: none; border-top: 1px solid #eee; margin: 6px 0; }
-    #randomSlider { accent-color: #c00; }
+    #randomSlider { accent-color: #111 !important; }
     #imgLabel {
       font-size: 11px;
       color: #aaa;
@@ -116,9 +111,9 @@
 <body>
   <div class="scene">
     <canvas id="c"></canvas>
-    <button id="imgBtn">►</button>
+    <button id="imgBtn"></button>
   </div>
-  <div id="imgLabel">Image 1 / 6</div>
+  <div id="imgLabel">Image 1 / 4</div>
 
   <div class="controls">
     <div class="slider-row">
@@ -150,11 +145,9 @@
 
 <script>
 const images = [
-  'https://picsum.photos/seed/aa/800/600',
-  'https://github.com/scienceetpoesie-coder/notre-entente/blob/main/assets/3%20PERSONNAGE/suiise%20allemand.jpg?raw=true',
-  'https://github.com/scienceetpoesie-coder/notre-entente/blob/main/assets/Stephane-Ravier.png?raw=true',
-  'https://github.com/scienceetpoesie-coder/notre-entente/blob/main/assets/steiniger_johannes_gross.jpg?raw=true',
-  'https://picsum.photos/seed/ee/800/600',
+  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/3%20PERSONNAGE/suiise%20allemand.jpg',
+  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/Stephane-Ravier.png',
+  'https://raw.githubusercontent.com/scienceetpoesie-coder/notre-entente/main/assets/steiniger_johannes_gross.jpg',
   'https://picsum.photos/seed/ff/800/600',
 ];
 
@@ -256,6 +249,7 @@ function loadImage(url) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.src = url;
+  img.onerror = () => { console.log('image non trouvée : ' + url); };
   img.onload = () => {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
