@@ -23,14 +23,13 @@ body {
   border-bottom:3px solid #ff6666; border-right:3px solid #ff4444; background:#aa0000;
 }
 #soundBtn {
-  width:60px; height:60px; flex-shrink:0; background:#111;
-  border-top:3px solid #444; border-left:3px solid #333;
-  border-bottom:3px solid #000; border-right:3px solid #000;
-  cursor:pointer; font-size:22px; color:#555;
+  width:60px; height:60px; flex-shrink:0;
+  background:#fff; border:2px solid #111;
+  cursor:pointer; font-size:32px; color:#111;
   display:flex; align-items:center; justify-content:center;
-  user-select:none; font-family:'Times New Roman',serif;
+  user-select:none; font-family:'Times New Roman',serif; line-height:1;
 }
-#soundBtn.on { color:#ddd; background:#1a1a2e; border-top-color:#5555bb; border-left-color:#4444aa; }
+#soundBtn.on { color:#ddd; background:#1a1a2e; border-color:#5555bb; }
 canvas { display:block; width:720px; height:480px; flex-shrink:0; }
 .controls { width:90vw; max-width:800px; display:flex; flex-direction:column; gap:14px; }
 .slider-row { display:flex; align-items:center; gap:16px; }
@@ -50,9 +49,15 @@ canvas { display:block; width:720px; height:480px; flex-shrink:0; }
   border-bottom:2px solid #fff; border-right:2px solid #fff; background:#ddd;
 }
 .separator { border:none; border-top:1px solid #eee; margin:6px 0; }
-.section-label { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#aaa; }
-#imgLabel { font-size:13px; color:#888; letter-spacing:.06em; font-family:Arial,sans-serif; width:720px; max-width:90vw; padding:6px 0 0 260px; }
-#synthInfo { font-size:11px; color:#7777bb; letter-spacing:.08em; font-family:Arial,sans-serif; text-transform:uppercase; padding:2px 0 0 260px; width:720px; max-width:90vw; min-height:16px; }
+.section-label { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#555; }
+#infoLine {
+  font-family:Arial,sans-serif;
+  width:720px; max-width:90vw;
+  padding:6px 0 0 260px;
+  display:flex; align-items:baseline; gap:18px;
+}
+#imgLabel  { font-size:13px; color:#888; letter-spacing:.06em; }
+#synthInfo { font-size:11px; color:#7777bb; letter-spacing:.08em; text-transform:uppercase; min-height:16px; }
 </style>
 </head>
 <body>
@@ -62,21 +67,24 @@ canvas { display:block; width:720px; height:480px; flex-shrink:0; }
   <canvas id="c" width="720" height="480"></canvas>
   <button id="imgBtn"></button>
 </div>
-<div id="imgLabel">—</div>
-<div id="synthInfo"></div>
+
+<div id="infoLine">
+  <span id="imgLabel">—</span>
+  <span id="synthInfo"></span>
+</div>
 
 <div class="controls">
-  <div class="section-label">Taille</div>
+  <div class="section-label">Taille :</div>
   <div class="slider-row"><label>Hauteur :</label><input type="range" id="scaleY" min="0.3" max="3" step="0.01" value="1.00"><span id="scaleYVal">1.00</span></div>
   <div class="slider-row"><label>Largeur :</label><input type="range" id="scaleX" min="0.3" max="3" step="0.01" value="1.45"><span id="scaleXVal">1.45</span></div>
   <hr class="separator">
-  <div class="section-label">Ondulation</div>
+  <div class="section-label">Ondulation :</div>
   <div class="slider-row"><label>Répétition :</label><input type="range" id="rep" min="1" max="60" step="0.5" value="7"><span id="repVal">7.0</span></div>
-  <div class="slider-row"><label>Vitesse :</label><input type="range" id="spd" min="0" max="30" step="0.1" value="3"><span id="spdVal">3.0</span></div>
-  <div class="slider-row"><label>Amplitude :</label><input type="range" id="amp" min="0" max="1.2" step="0.01" value="0.04"><span id="ampVal">0.04</span></div>
+  <div class="slider-row"><label>Vitesse :</label><input type="range" id="spd" min="0" max="50" step="0.1" value="3"><span id="spdVal">3.0</span></div>
+  <div class="slider-row"><label>Amplitude :</label><input type="range" id="amp" min="0" max="0.35" step="0.005" value="0.04"><span id="ampVal">0.04</span></div>
   <div class="btn-row"><label>Axe :</label><button id="dirBtn">Y</button></div>
-  <div class="section-label">Chaos</div>
-  <div class="slider-row"><input type="range" id="randomSlider" min="0" max="1" step="0.01" value="0" style="accent-color:#111"><span id="randomVal">0.00</span></div>
+  <div class="section-label">Chaos :</div>
+  <div class="slider-row"><input type="range" id="randomSlider" min="0" max="1.8" step="0.01" value="0" style="accent-color:#111"><span id="randomVal">0.00</span></div>
 </div>
 
 <script>
@@ -102,7 +110,7 @@ var images = [
     defaults:{} },
   { url:BASE+'Beigbeder.jpg',
     name:'Frédéric Beigbeder', synth:'beigbeder',
-    defaults:{scaleY:1.10,scaleX:1.20,rep:5,spd:1.2,amp:0.06,dir:0,chaos:0.08} },
+    defaults:{scaleY:0.78,scaleX:0.77,rep:5,spd:10.2,amp:0.26,dir:0,chaos:0.11} },
 ];
 
 var imgIndex = 0;
@@ -160,11 +168,11 @@ void main(){
     float vx = smoothstep(0.0, m, uv.x) * smoothstep(0.0, m, 1.0 - uv.x);
     float vy = smoothstep(0.0, m, uv.y) * smoothstep(0.0, m, 1.0 - uv.y);
     float vign = vx * vy;
-    float amount = u_chaos * u_chaos * 0.44 * vign;
-    float nx1 = vnoise(uv * 1.8 + vec2(u_time * 0.10, 0.0)) - 0.5;
-    float ny1 = vnoise(uv * 1.8 + vec2(0.0, u_time * 0.12) + vec2(3.7,8.2)) - 0.5;
-    float nx2 = vnoise(uv * 5.0 + vec2(-u_time*0.24, u_time*0.17) + vec2(1.3,4.1)) - 0.5;
-    float ny2 = vnoise(uv * 5.0 + vec2(u_time*0.20,-u_time*0.14) + vec2(6.6,2.9)) - 0.5;
+    float amount = u_chaos * u_chaos * 0.55 * vign;
+    float nx1 = vnoise(uv * 1.2 + vec2(u_time * 0.08, 0.0)) - 0.5;
+    float ny1 = vnoise(uv * 1.2 + vec2(0.0, u_time * 0.10) + vec2(3.7,8.2)) - 0.5;
+    float nx2 = vnoise(uv * 2.8 + vec2(-u_time*0.15, u_time*0.12) + vec2(1.3,4.1)) - 0.5;
+    float ny2 = vnoise(uv * 2.8 + vec2(u_time*0.13,-u_time*0.10) + vec2(6.6,2.9)) - 0.5;
     vec2 d = vec2(nx1,ny1)*0.72 + vec2(nx2,ny2)*0.32;
     uv += d * amount;
   }
@@ -218,6 +226,7 @@ function loadImage(index, applyDef){
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);
   };
   img.src = e.url;
+  /* changement de personnage → rebuild complet (nouvelle note) */
   if(synthOn && actx) rebuildPatch(e.synth||'ravier');
 }
 
@@ -241,12 +250,59 @@ document.getElementById('amp').oninput          = function(e){ gAmp   =+e.target
 document.getElementById('scaleX').oninput       = function(e){ gScaleX=+e.target.value; document.getElementById('scaleXVal').textContent=(+gScaleX).toFixed(2); };
 document.getElementById('scaleY').oninput       = function(e){ gScaleY=+e.target.value; document.getElementById('scaleYVal').textContent=(+gScaleY).toFixed(2); };
 document.getElementById('randomSlider').oninput = function(e){ gChaos =+e.target.value; document.getElementById('randomVal').textContent=(+gChaos).toFixed(2);  };
+
+/* ── X/Y : change forme d'onde à chaud, sans relancer l'enveloppe ── */
 document.getElementById('dirBtn').onclick = function(){
   gDir = gDir<0.5 ? 1 : 0;
   document.getElementById('dirBtn').textContent = gDir<0.5?'X':'Y';
-  if(synthOn && actx) rebuildPatch(images[imgIndex].synth||'ravier');
+  applyWaveformSwitch(images[imgIndex].synth||'ravier');
+  updatePatchLabel(images[imgIndex].synth||'ravier');
 };
-document.getElementById('imgBtn').onclick = function(){ imgIndex=(imgIndex+1)%images.length; loadImage(imgIndex,false); };
+
+/* ══════════════════════════════════════════════
+   Changement de forme d'onde à chaud
+   Indices des oscillateurs par patch (voir commentaires rebuildPatch)
+══════════════════════════════════════════════ */
+function applyWaveformSwitch(name){
+  if(!actx||!synthOn||patchNodes.length===0) return;
+  var inv=(gDir<0.5);
+  try{
+    if(name==='ravier'){
+      patchNodes[0].type = inv?'sine':'triangle';   /* carrier */
+      patchNodes[1].type = inv?'triangle':'square'; /* modOsc  */
+    } else if(name==='steiniger'){
+      patchNodes[0].type = inv?'triangle':'square'; /* oA */
+      patchNodes[1].type = inv?'sine':'square';     /* oB */
+    } else if(name==='val'){
+      patchNodes[0].type = inv?'sine':'sawtooth';   /* oA */
+      patchNodes[1].type = inv?'sine':'triangle';   /* oB */
+    } else if(name==='blocher'){
+      patchNodes[0].type = inv?'triangle':'sine';   /* sub */
+    } else if(name==='lellouche'){
+      patchNodes[0].type = inv?'sine':'sawtooth';   /* op1 */
+      patchNodes[1].type = inv?'sine':'triangle';   /* op2 */
+    } else if(name==='beigbeder'){
+      patchNodes[0].type = inv?'triangle':'sine';   /* oA */
+      patchNodes[1].type = inv?'triangle':'sine';   /* oB */
+      patchNodes[9].type = inv?'highpass':'lowpass';/* filt */
+    }
+  }catch(e){}
+}
+
+/* Labels patch par synth × axe */
+var PATCH_LABELS = {
+  ravier:    ['patch : fm · sine/triangle · spectral',       'patch : fm 2-op · cuivré · harangue'],
+  steiniger: ['patch : ring mod · rond · presque voix',      'patch : ring mod · métallique · parlementaire'],
+  val:       ['patch : cross mod · sinusoïdal · instable',   'patch : cross mod · inharmonique · rhétorique'],
+  blocher:   ['patch : sub triangle · battements · montagnard','patch : sub sine · tellurique · massif'],
+  lellouche: ['patch : fm 3-op sine · pur→chaos · charnel',  'patch : fm 3-op · cinématique · ascendant'],
+  beigbeder: ['patch : drone triangle · flottant · mélancolie sèche','patch : drone sine · noyé · mélancolie alcoolisée'],
+};
+function updatePatchLabel(name){
+  var inv=(gDir<0.5);
+  var pair=PATCH_LABELS[name]||['',''];
+  document.getElementById('synthInfo').textContent=inv?pair[0]:pair[1];
+}
 
 /* ══════════════════════════════════════════════
    Audio — utilitaires
@@ -256,7 +312,6 @@ function tanhCurve(amount){
   for(var i=0;i<512;i++){ var x=i/256-1; c[i]=Math.tanh(x*amount)*0.88; }
   return c;
 }
-
 function makeSH(rate, outGain){
   if(!actx||!actx.createConstantSource) return null;
   var src=actx.createConstantSource();
@@ -270,7 +325,6 @@ function makeSH(rate, outGain){
   }, Math.round(1000/Math.max(0.05,rate)));
   return { node:gain, src:src, stop:function(){ clearInterval(iv); try{src.stop();}catch(e){} } };
 }
-
 function disposeNodes(){
   patchNodes.forEach(function(n){
     try{ if(n.stop) n.stop(0); n.disconnect(); }catch(e){}
@@ -279,7 +333,8 @@ function disposeNodes(){
 }
 
 /* ══════════════════════════════════════════════
-   PATCHES
+   PATCHES — rebuild complet (bouton ♪ ou changement de personnage)
+   Indices des patchNodes documentés en en-tête de chaque bloc.
 ══════════════════════════════════════════════ */
 function rebuildPatch(name){
   if(!actx||!synthOn) return;
@@ -287,20 +342,18 @@ function rebuildPatch(name){
   var dst=masterGain, now=actx.currentTime;
   var inv=(gDir<0.5);
 
-  /* ────────────────────────────────────────────
-     RAVIER — FM 2-op
-  ──────────────────────────────────────────── */
+  /* ── RAVIER — FM 2-op
+     [0]=carrier [1]=modOsc [2]=lfo [3]=modGain [4]=carGain [5]=lfoG [6]=filt [7]=wave */
   if(name==='ravier'){
-    var carrier = actx.createOscillator(); carrier.type = inv ? 'sine' : 'triangle';
-    var modOsc  = actx.createOscillator(); modOsc.type = inv ? 'triangle' : 'square';
-    var modGain = actx.createGain();
-    var carGain = actx.createGain(); carGain.gain.value=0.40;
-    var lfo     = actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=3.2;
-    var lfoG    = actx.createGain(); lfoG.gain.value=0;
-    var filt    = actx.createBiquadFilter(); filt.type='bandpass'; filt.Q.value=inv?1.8:2.8;
-    var wave    = actx.createWaveShaper(); wave.curve=tanhCurve(inv?1.1:1.6);
-    var sh      = makeSH(2+gChaos*8, 0);
-
+    var carrier=actx.createOscillator(); carrier.type=inv?'sine':'triangle';
+    var modOsc =actx.createOscillator(); modOsc.type=inv?'triangle':'square';
+    var modGain=actx.createGain();
+    var carGain=actx.createGain(); carGain.gain.value=0.40;
+    var lfo    =actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=3.2;
+    var lfoG   =actx.createGain(); lfoG.gain.value=0;
+    var filt   =actx.createBiquadFilter(); filt.type='bandpass'; filt.Q.value=inv?1.8:2.8;
+    var wave   =actx.createWaveShaper(); wave.curve=tanhCurve(inv?1.1:1.6);
+    var sh     =makeSH(2+gChaos*8,0);
     modOsc.connect(modGain); modGain.connect(carrier.frequency);
     if(sh) sh.node.connect(carrier.frequency);
     lfo.connect(lfoG); lfoG.connect(carrier.frequency);
@@ -308,7 +361,6 @@ function rebuildPatch(name){
     carrier.start(now); modOsc.start(now); lfo.start(now);
     patchNodes=[carrier,modOsc,lfo,modGain,carGain,lfoG,filt,wave];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime, fc=55*Math.pow(2,gRep/18);
       carrier.frequency.setTargetAtTime(fc,t,.10);
@@ -320,23 +372,19 @@ function rebuildPatch(name){
       filt.Q.setTargetAtTime(inv?1.6:(1.4+gChaos*7),t,.08);
       if(sh) try{sh.node.gain.setTargetAtTime(fc*gChaos*0.85,t,.05);}catch(e){}
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : fm · sine/triangle · spectral':'patch : fm 2-op · cuivré · harangue';
 
-  /* ────────────────────────────────────────────
-     STEINIGER — Ring mod
-  ──────────────────────────────────────────── */
+  /* ── STEINIGER — Ring mod
+     [0]=oA [1]=oB [2]=lfo [3]=ringG [4]=mix [5]=lfoG [6]=filt */
   } else if(name==='steiniger'){
-    var oA = actx.createOscillator(); oA.type = inv?'triangle':'square';
-    var oB = actx.createOscillator(); oB.type = inv?'sine':'square';
-    var ringG = actx.createGain(); ringG.gain.value=0;
+    var oA=actx.createOscillator(); oA.type=inv?'triangle':'square';
+    var oB=actx.createOscillator(); oB.type=inv?'sine':'square';
+    var ringG=actx.createGain(); ringG.gain.value=0;
     oA.connect(ringG); oB.connect(ringG.gain);
-    var mix   = actx.createGain(); mix.gain.value=0.36;
-    var filt  = actx.createBiquadFilter(); filt.type='bandpass'; filt.Q.value=inv?1.5:2.2;
-    var lfo   = actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.25;
-    var lfoG  = actx.createGain(); lfoG.gain.value=0;
-    var sh    = makeSH(1.5+gChaos*5, 0);
-
+    var mix =actx.createGain(); mix.gain.value=0.36;
+    var filt=actx.createBiquadFilter(); filt.type='bandpass'; filt.Q.value=inv?1.5:2.2;
+    var lfo =actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.25;
+    var lfoG=actx.createGain(); lfoG.gain.value=0;
+    var sh  =makeSH(1.5+gChaos*5,0);
     ringG.connect(mix); mix.connect(filt);
     lfo.connect(lfoG); lfoG.connect(filt.frequency);
     if(sh) sh.node.connect(filt.frequency);
@@ -344,10 +392,9 @@ function rebuildPatch(name){
     oA.start(now); oB.start(now); lfo.start(now);
     patchNodes=[oA,oB,lfo,ringG,mix,lfoG,filt];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime, fc=55*Math.pow(2,gRep/12);
-      var ratio = 1 + (0.5+gSpd*0.35)*0.04;
+      var ratio=1+(0.5+gSpd*0.35)*0.04;
       oA.frequency.setTargetAtTime(fc,t,.10);
       oB.frequency.setTargetAtTime(fc*ratio,t,.10);
       oA.detune.setTargetAtTime((gScaleX-1)*70,t,.10);
@@ -358,24 +405,20 @@ function rebuildPatch(name){
       filt.Q.setTargetAtTime(inv?(1.2+gChaos*5):(1.8+gChaos*8),t,.10);
       if(sh) try{sh.node.gain.setTargetAtTime((inv?900:650)*gChaos,t,.05);}catch(e){}
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : ring mod · rond · presque voix':'patch : ring mod · métallique · parlementaire';
 
-  /* ────────────────────────────────────────────
-     VAL — Cross mod
-  ──────────────────────────────────────────── */
+  /* ── VAL — Cross mod
+     [0]=oA [1]=oB [2]=lfo [3]=gAB [4]=gBA [5]=outA [6]=outB [7]=lfoG [8]=filt */
   } else if(name==='val'){
-    var oA  = actx.createOscillator(); oA.type = inv?'sine':'sawtooth';
-    var oB  = actx.createOscillator(); oB.type = inv?'sine':'triangle';
-    var gAB = actx.createGain(); gAB.gain.value=0;
-    var gBA = actx.createGain(); gBA.gain.value=0;
-    var outA = actx.createGain(); outA.gain.value=0.22;
-    var outB = actx.createGain(); outB.gain.value=0.22;
-    var filt = actx.createBiquadFilter(); filt.type='lowpass'; filt.Q.value=2.5;
-    var lfo  = actx.createOscillator(); lfo.type='sine';
-    var lfoG = actx.createGain(); lfoG.gain.value=0;
-    var sh   = makeSH(1+gChaos*5, 0);
-
+    var oA =actx.createOscillator(); oA.type=inv?'sine':'sawtooth';
+    var oB =actx.createOscillator(); oB.type=inv?'sine':'triangle';
+    var gAB=actx.createGain(); gAB.gain.value=0;
+    var gBA=actx.createGain(); gBA.gain.value=0;
+    var outA=actx.createGain(); outA.gain.value=0.22;
+    var outB=actx.createGain(); outB.gain.value=0.22;
+    var filt=actx.createBiquadFilter(); filt.type='lowpass'; filt.Q.value=2.5;
+    var lfo =actx.createOscillator(); lfo.type='sine';
+    var lfoG=actx.createGain(); lfoG.gain.value=0;
+    var sh  =makeSH(1+gChaos*5,0);
     oA.connect(gAB); gAB.connect(oB.frequency);
     oB.connect(gBA); gBA.connect(oA.frequency);
     oA.connect(outA); oB.connect(outB);
@@ -386,7 +429,6 @@ function rebuildPatch(name){
     oA.start(now); oB.start(now); lfo.start(now);
     patchNodes=[oA,oB,lfo,gAB,gBA,outA,outB,lfoG,filt];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime, fc=55*Math.pow(2,gRep/12);
       oA.frequency.setTargetAtTime(fc,t,.10);
@@ -400,27 +442,23 @@ function rebuildPatch(name){
       filt.Q.setTargetAtTime(1.5+gChaos*9,t,.10);
       if(sh) try{sh.node.gain.setTargetAtTime(fc*gChaos*1.2,t,.05);}catch(e){}
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : cross mod · sinusoïdal · instable':'patch : cross mod · inharmonique · rhétorique';
 
-  /* ────────────────────────────────────────────
-     BLOCHER — Sub + ring mod tellurique
-  ──────────────────────────────────────────── */
+  /* ── BLOCHER — Sub + ring mod tellurique
+     [0]=sub [1]=ringOsc [2]=lfo [3]=subG [4]=ringG [5]=ringOut [6]=comb [7]=lfoG */
   } else if(name==='blocher'){
-    var sub  = actx.createOscillator(); sub.type = inv?'triangle':'sine';
-    var subG = actx.createGain(); subG.gain.value=0.48;
-    var ringOsc = actx.createOscillator(); ringOsc.type='sine';
-    var ringG   = actx.createGain(); ringG.gain.value=0;
+    var sub    =actx.createOscillator(); sub.type=inv?'triangle':'sine';
+    var subG   =actx.createGain(); subG.gain.value=0.48;
+    var ringOsc=actx.createOscillator(); ringOsc.type='sine';
+    var ringG  =actx.createGain(); ringG.gain.value=0;
     sub.connect(ringG); ringOsc.connect(ringG.gain);
-    var ringOut = actx.createGain(); ringOut.gain.value=0.28;
+    var ringOut=actx.createGain(); ringOut.gain.value=0.28;
     ringG.connect(ringOut);
-    var comb = actx.createBiquadFilter();
-    comb.type = inv?'bandpass':'lowpass';
+    var comb=actx.createBiquadFilter();
+    comb.type=inv?'bandpass':'lowpass';
     comb.frequency.value=inv?180:260; comb.Q.value=inv?1.2:2.0;
-    var lfo  = actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.04;
-    var lfoG = actx.createGain(); lfoG.gain.value=0;
-    var sh   = makeSH(0.4+gChaos*2.5, 0);
-
+    var lfo =actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.04;
+    var lfoG=actx.createGain(); lfoG.gain.value=0;
+    var sh  =makeSH(0.4+gChaos*2.5,0);
     sub.connect(subG); subG.connect(comb);
     ringOut.connect(comb);
     lfo.connect(lfoG); lfoG.connect(comb.frequency);
@@ -429,11 +467,10 @@ function rebuildPatch(name){
     sub.start(now); ringOsc.start(now); lfo.start(now);
     patchNodes=[sub,ringOsc,lfo,subG,ringG,ringOut,comb,lfoG];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime, fc=28*Math.pow(2,gRep/18);
       sub.frequency.setTargetAtTime(fc,t,.35);
-      var beatFreq = inv ? (2.5+gSpd*1.2) : (0.8+gSpd*0.5);
+      var beatFreq=inv?(2.5+gSpd*1.2):(0.8+gSpd*0.5);
       ringOsc.frequency.setTargetAtTime(fc+beatFreq,t,.30);
       ringOut.gain.setTargetAtTime(0.15+gAmp*0.6,t,.15);
       comb.frequency.setTargetAtTime(inv?(120+gScaleY*480):(45+gScaleY*340),t,.25);
@@ -442,27 +479,23 @@ function rebuildPatch(name){
       lfoG.gain.setTargetAtTime(gAmp*240,t,.10);
       if(sh) try{sh.node.gain.setTargetAtTime(fc*gChaos*0.65,t,.05);}catch(e){}
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : sub triangle · battements · montagnard':'patch : sub sine · tellurique · massif';
 
-  /* ────────────────────────────────────────────
-     LELLOUCHE — FM 3-op feedback
-  ──────────────────────────────────────────── */
+  /* ── LELLOUCHE — FM 3-op feedback
+     [0]=op1 [1]=op2 [2]=op3 [3]=car [4]=lfo [5]=g1 [6]=g2 [7]=g3 [8]=gCar [9]=fbG [10]=lfoM [11]=filt */
   } else if(name==='lellouche'){
-    var op1 = actx.createOscillator(); op1.type = inv?'sine':'sawtooth';
-    var op2 = actx.createOscillator(); op2.type = inv?'sine':'triangle';
-    var op3 = actx.createOscillator(); op3.type='sine';
-    var car = actx.createOscillator(); car.type='sine';
-    var g1  = actx.createGain(); g1.gain.value=0;
-    var g2  = actx.createGain(); g2.gain.value=0;
-    var g3  = actx.createGain(); g3.gain.value=0;
-    var gCar= actx.createGain(); gCar.gain.value=0.44;
-    var fbG = actx.createGain(); fbG.gain.value=0;
-    var lfo = actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.6;
-    var lfoM= actx.createGain(); lfoM.gain.value=0;
-    var filt= actx.createBiquadFilter(); filt.type='lowpass'; filt.Q.value=3.5;
-    var sh  = makeSH(1.5+gChaos*6, 0);
-
+    var op1=actx.createOscillator(); op1.type=inv?'sine':'sawtooth';
+    var op2=actx.createOscillator(); op2.type=inv?'sine':'triangle';
+    var op3=actx.createOscillator(); op3.type='sine';
+    var car=actx.createOscillator(); car.type='sine';
+    var g1 =actx.createGain(); g1.gain.value=0;
+    var g2 =actx.createGain(); g2.gain.value=0;
+    var g3 =actx.createGain(); g3.gain.value=0;
+    var gCar=actx.createGain(); gCar.gain.value=0.44;
+    var fbG =actx.createGain(); fbG.gain.value=0;
+    var lfo =actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.6;
+    var lfoM=actx.createGain(); lfoM.gain.value=0;
+    var filt=actx.createBiquadFilter(); filt.type='lowpass'; filt.Q.value=3.5;
+    var sh  =makeSH(1.5+gChaos*6,0);
     op1.connect(g1); g1.connect(op2.frequency);
     op2.connect(g2); g2.connect(op3.frequency);
     op3.connect(g3); g3.connect(car.frequency);
@@ -474,7 +507,6 @@ function rebuildPatch(name){
     [op1,op2,op3,car,lfo].forEach(function(o){o.start(now);});
     patchNodes=[op1,op2,op3,car,lfo,g1,g2,g3,gCar,fbG,lfoM,filt];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime, fc=55*Math.pow(2,gRep/12), fmR=0.5+gSpd*0.32;
       car.frequency.setTargetAtTime(fc,t,.08);
@@ -490,100 +522,59 @@ function rebuildPatch(name){
       filt.Q.setTargetAtTime(1.4+gChaos*8,t,.10);
       if(sh) try{sh.node.gain.setTargetAtTime(fc*gChaos*0.75,t,.05);}catch(e){}
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : fm 3-op sine · pur→chaos · charnel':'patch : fm 3-op · cinématique · ascendant';
 
-  /* ────────────────────────────────────────────
-     BEIGBEDER — Drone mélancolique
-     Deux oscillateurs accordés en quinte, très légèrement désaccordés,
-     qui flottent l'un par rapport à l'autre — battements lents comme
-     une pensée qui revient sur elle-même. Un LFO très lent fait tanguer
-     le filtre comme un verre à moitié plein. Reverb simulée par allpass.
-     X (défaut) : sine + triangle, filtre passe-haut, flottant, amer
-     Y            : sawtooth étouffé, plus dense, plus noyé
-  ──────────────────────────────────────────── */
+  /* ── BEIGBEDER — Drone mélancolique
+     [0]=oA [1]=oB [2]=oC [3]=lfo [4]=gA [5]=gB [6]=gC [7]=lfoA [8]=lfoB [9]=filt [10]=ap1 [11]=ap2 [12]=shape [13]=outG */
   } else if(name==='beigbeder'){
-    /* drone principal */
-    var oA = actx.createOscillator(); oA.type = inv?'sawtooth':'sine';
-    var oB = actx.createOscillator(); oB.type = inv?'sawtooth':'triangle';
-    /* léger désaccord → battements lents, mélancoliques */
-    var gA = actx.createGain(); gA.gain.value = inv?0.18:0.22;
-    var gB = actx.createGain(); gB.gain.value = inv?0.14:0.18;
-
-    /* harmonique haute, très douce — la nostalgie du passé */
-    var oC = actx.createOscillator(); oC.type = 'sine';
-    var gC = actx.createGain(); gC.gain.value = 0.07;
-
-    /* LFO très lent — la houle alcoolisée */
-    var lfo  = actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.05;
-    var lfoA = actx.createGain(); lfoA.gain.value=0; /* → filtre */
-    var lfoB = actx.createGain(); lfoB.gain.value=0; /* → gain général, souffle */
-
-    /* filtre : highpass en X (flottant), lowpass en Y (noyé) */
-    var filt = actx.createBiquadFilter();
-    filt.type = inv?'lowpass':'highpass';
-    filt.Q.value = inv?1.2:0.8;
-
-    /* allpass × 2 pour simuler un espace, une réverb de chambre d'hôtel */
-    var ap1 = actx.createBiquadFilter(); ap1.type='allpass'; ap1.frequency.value=800;  ap1.Q.value=4;
-    var ap2 = actx.createBiquadFilter(); ap2.type='allpass'; ap2.frequency.value=1600; ap2.Q.value=3;
-
-    /* WaveShaper très doux — juste ce qu'il faut d'amertume */
-    var shape = actx.createWaveShaper(); shape.curve=tanhCurve(inv?0.6:0.4);
-
-    /* gain de sortie */
-    var outG = actx.createGain(); outG.gain.value=0.38;
-
-    /* S&H très lent — pensée qui dérive */
-    var sh = makeSH(0.3+gChaos*1.5, 0);
-
-    /* routage */
+    var oA=actx.createOscillator(); oA.type=inv?'triangle':'sine';
+    var oB=actx.createOscillator(); oB.type=inv?'triangle':'sine';
+    var gA=actx.createGain(); gA.gain.value=0.28;
+    var gB=actx.createGain(); gB.gain.value=0.20;
+    var oC=actx.createOscillator(); oC.type='sine';
+    var gC=actx.createGain(); gC.gain.value=0.08;
+    var lfo =actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.05;
+    var lfoA=actx.createGain(); lfoA.gain.value=0;
+    var lfoB=actx.createGain(); lfoB.gain.value=0;
+    var filt=actx.createBiquadFilter();
+    filt.type=inv?'highpass':'lowpass'; filt.Q.value=inv?0.9:1.2;
+    var ap1=actx.createBiquadFilter(); ap1.type='allpass'; ap1.frequency.value=800;  ap1.Q.value=4;
+    var ap2=actx.createBiquadFilter(); ap2.type='allpass'; ap2.frequency.value=1600; ap2.Q.value=3;
+    var shape=actx.createWaveShaper(); shape.curve=tanhCurve(inv?0.5:0.35);
+    var outG=actx.createGain(); outG.gain.value=0.42;
+    var sh=makeSH(0.3+gChaos*1.5,0);
     oA.connect(gA); oB.connect(gB); oC.connect(gC);
     gA.connect(filt); gB.connect(filt); gC.connect(filt);
     lfo.connect(lfoA); lfoA.connect(filt.frequency);
     lfo.connect(lfoB); lfoB.connect(outG.gain);
     if(sh) sh.node.connect(oA.detune);
     filt.connect(ap1); ap1.connect(ap2); ap2.connect(shape); shape.connect(outG); outG.connect(dst);
-
     oA.start(now); oB.start(now); oC.start(now); lfo.start(now);
     patchNodes=[oA,oB,oC,lfo,gA,gB,gC,lfoA,lfoB,filt,ap1,ap2,shape,outG];
     if(sh) patchNodes.push(sh);
-
     updateFn=function(){
       var t=actx.currentTime;
-      /* fréquence de base : grave, lente à réagir — comme un souvenir */
-      var fc = 55*Math.pow(2,gRep/20);
+      var fc=55*Math.pow(2,gRep/20);
       oA.frequency.setTargetAtTime(fc,t,.60);
-      /* oB en quinte juste, micro-désaccordé selon vitesse */
-      var detune = 0.8+gSpd*0.35;
-      oB.frequency.setTargetAtTime(fc*1.5+detune,t,.55);
-      /* harmonique haute : octave +1 tierce */
+      var beat=0.4+gSpd*0.18;
+      oB.frequency.setTargetAtTime(fc*1.5+beat,t,.55);
       oC.frequency.setTargetAtTime(fc*5,t,.50);
-
-      /* filtre : bouge très lentement, suit l'amplitude */
       filt.frequency.setTargetAtTime(
-        inv?(180+gScaleY*800+gAmp*600):(400+gScaleY*1200+gAmp*800),
-        t,.40);
-
-      /* LFO : houle, très lente */
-      lfo.frequency.setTargetAtTime(0.02+gSpd*0.015,t,.80);
-      lfoA.gain.setTargetAtTime(gAmp*320,t,.30);
-      lfoB.gain.setTargetAtTime(gAmp*0.12,t,.30);
-
-      /* S&H : dérive mélancolique */
-      if(sh) try{sh.node.gain.setTargetAtTime(gChaos*180,t,.20);}catch(e){}
-
-      /* allpass : réverb imaginaire */
-      ap1.frequency.setTargetAtTime(600+gScaleX*400,t,.35);
-      ap2.frequency.setTargetAtTime(1200+gScaleX*600,t,.35);
+        inv?(280+gScaleY*900+gAmp*2400):(140+gScaleY*900+gAmp*2000),t,.40);
+      filt.Q.setTargetAtTime(inv?(0.8+gChaos*3):(1.0+gChaos*4),t,.30);
+      lfo.frequency.setTargetAtTime(0.02+gSpd*0.012,t,.80);
+      lfoA.gain.setTargetAtTime(gAmp*500,t,.30);
+      lfoB.gain.setTargetAtTime(gAmp*0.10,t,.30);
+      if(sh) try{sh.node.gain.setTargetAtTime(gChaos*200,t,.20);}catch(e){}
+      ap1.frequency.setTargetAtTime(500+gScaleX*500,t,.35);
+      ap2.frequency.setTargetAtTime(1000+gScaleX*700,t,.35);
     };
-    document.getElementById('synthInfo').textContent=
-      inv?'patch : drone sawtooth · noyé · mélancolie dense':'patch : drone sine · flottant · mélancolie alcoolisée';
   }
+
+  updatePatchLabel(name);
 }
 
 /* ══════════════════════════════════════════════
-   Init audio + bouton son
+   Init audio + bouton son (rebuild complet = nouvelle note)
 ══════════════════════════════════════════════ */
 function initAudio(){
   if(actx) return;
